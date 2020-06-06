@@ -10,6 +10,9 @@ class HacknMage extends Game {
     Paint bgPaint = Paint();
     bgPaint.color = Color(0xff000000);
     canvas.drawRect(bgRect, bgPaint);
+    bgPaint.color = Color(0xf5f5f5f5);
+    Rect.fromLTRB(0, 0, 0, 0);
+
   }
   
   @override
