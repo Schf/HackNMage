@@ -21,9 +21,7 @@ class HacknMage extends Game {
   }
   
   @override
-  void update(double t) {
-    // TODO: implement update
-  }
+  void update(double t) {}
 
   @override
   void resize(Size size){

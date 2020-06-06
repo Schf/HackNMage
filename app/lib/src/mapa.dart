@@ -1,54 +1,55 @@
 library mapa;
 import 'dart:ui';
-import 'package:flame/game.dart';
 import 'package:flame/text_config.dart';
 
-class Quadrado{
+class Character{
 
-  double get left=>left;
-  set left(double left)=>this.left = left;
-
-  double get right=>right;
-  set right(double right)=>this.right = right;
-
-  double get top=>top;
-  set top(double top)=>this.top = top;
-
-  double get bottom=>bottom;
-  set bottom(double bottom)=>this.bottom = bottom;
-
-  Color get color=>color;
-  set color(Color color)=>this.color = color;
-
-}
-
-class Caracter{
+  TextConfig textConfig;
+  String char;
   
-  double get posX=>posX;
-  set posX(double posX)=>this.posX = posX;
+  Character({this.char, this.textConfig});
 
-  double get posY=>posY;
-  set posY(double posY)=>this.posY = posY;
+  modifyChar(String char){
+    if(this.char != char){
+      this.char = char;
+      this.textConfig = new TextConfig(color : _whatColorIsThatChar(char));
+    }
+  }
 
-  TextConfig get textConfig=>textConfig;
-  set textConfig(TextConfig textConfig)=>this.textConfig = textConfig;
+  _whatColorIsThatChar(String char){
+    //Aqui vai ter um tipo de request pra achar a cor, caso tenham muitos tipos de caracteres, podemos fazer um request a um banco de dados para deixar mais organizado
+    if(char == 'X')
+      return Color(0xfaaaaf00);
+    else if(char == '.')
+      return Color(0xffff4f00);
+  }
+
 }
 
-class Campo {
-  Quadrado get quadrado=>quadrado;
-  set quadrado(Quadrado quadrado)=>this.quadrado = quadrado;
+class Campo{
 
-  Caracter get caracter=>caracter;
-  set caracter(Caracter caracter)=>this.caracter = caracter;
+  Rect square;
+  Color color;
+  Character character;
+
+  Campo(int i, int j){
+    if (i == 0 || /*i == MAXVALUE*/ j == 0|| /*j == MAXVALUE*/ j == 10 || i == 10)
+      character = new Character(char: 'X', textConfig: new TextConfig(color: Color(0xf5f5f5f5)));
+    else
+      character = new Character(char: '.', textConfig: new TextConfig(color: Color(0xf5f5f5f5)));
+  }
 
 }
 
-class Mapa {
-  List<List<Campo>> mapa;
-  int comprimento;
-  int largura;
+class Map{
+  var field;
+  int width;
+  int height;
 
-  Mapa({this.comprimento, this.largura});
+  Map({this.width, this.height});
 
-  
+  void initMap(){
+    field = List<List<Campo>>.generate(width, (i) => List<Campo>.generate(height, (j)=>Campo(i,j)));
+  }
+
 }
