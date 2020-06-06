@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:flame/game.dart';
+import 'package:flame/text_config.dart';
+import 'package:flame/position.dart';
 
 class HacknMage extends Game {
   Size screenSize;
@@ -11,7 +13,10 @@ class HacknMage extends Game {
     bgPaint.color = Color(0xff000000);
     canvas.drawRect(bgRect, bgPaint);
     bgPaint.color = Color(0xf5f5f5f5);
-    Rect.fromLTRB(0, 0, 0, 0);
+    Rect novo = Rect.fromLTRB(0, 0, 30, 30);
+    canvas.drawRect(novo, bgPaint);
+    const TextConfig config = TextConfig(fontSize: 20.0, fontFamily: 'Awesome Font');
+    config.render(canvas, "Flame is awesome", Position(5, 5));
 
   }
   
