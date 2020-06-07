@@ -17,7 +17,7 @@ class Character{
   }
 
   _whatColorIsThatChar(String char){
-    //Aqui vai ter um tipo de request pra achar a cor, caso tenham muitos tipos de caracteres, podemos fazer um request a um banco de dados para deixar mais organizado
+    //Aqui vai ter um tipo de request pra achar a cor, caso tenham 7 tipos de caracteres, vamos fazer um request a um banco de dados local para deixar mais organizado
     if(char == 'X')
       return Color(0xfaaaaf00);
     else if(char == '.')
