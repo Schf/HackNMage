@@ -1,4 +1,4 @@
-library mapa;
+library map;
 import 'dart:ui';
 import 'package:flame/text_config.dart';
 
@@ -26,13 +26,13 @@ class Character{
 
 }
 
-class Campo{
+class MapSquare{
 
   Rect square;
   Color color;
   Character character;
 
-  Campo(int i, int j){
+  MapSquare(int i, int j){
     if (i == 0 || /*i == MAXVALUE*/ j == 0|| /*j == MAXVALUE*/ j == 10 || i == 10)
       character = new Character(char: 'X', textConfig: new TextConfig(color: Color(0xf5f5f5f5)));
     else
@@ -49,7 +49,7 @@ class Map{
   Map({this.width, this.height});
 
   void initMap(){
-    field = List<List<Campo>>.generate(width, (i) => List<Campo>.generate(height, (j)=>Campo(i,j)));
+    field = List<List<MapSquare>>.generate(width, (i) => List<MapSquare>.generate(height, (j)=>MapSquare(i,j)));
   }
 
 }
