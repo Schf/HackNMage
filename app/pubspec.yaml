@@ -38,6 +38,19 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  fonts:
+    - family: RobotoMono
+      fonts:
+        - asset: fonts\RobotoMono-Regular.ttf
+      #  - asset: fonts\RobotoMono-Bold.ttf
+      #  - asset: fonts\RobotoMono-BoldItalic.ttf
+      #  - asset: fonts\RobotoMono-Italic.ttf
+      #  - asset: fonts\RobotoMono-Light.ttf
+      #  - asset: fonts\RobotoMono-LightItalic.ttf
+      #  - asset: fonts\RobotoMono-Medium.ttf
+      #  - asset: fonts\RobotoMono-MediumItalic.ttf
+      #  - asset: fonts\RobotoMono-Thin.ttf
+      #  - asset: fonts\RobotoMono-ThinItalic.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
