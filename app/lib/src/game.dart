@@ -1,8 +1,7 @@
 import 'dart:ui';
 
+import 'package:app/src/mages.dart';
 import 'package:flame/game.dart';
-import 'package:flame/text_config.dart';
-import 'package:flame/position.dart';
 
 import 'package:flutter/material.dart';
 import 'package:app/src/background.dart';
@@ -14,6 +13,7 @@ class HacknMage extends BaseGame {
   HacknMage(){
     add(Background());
     add(Map(widthSquares: 11, heightSquares: 15));
+    add(FireMage());
   }
   
   @override

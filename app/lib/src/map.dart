@@ -62,16 +62,15 @@ class Map extends Component with Resizable{
 
   Map({this.widthSquares, this.heightSquares});
 
-  initMap(){
+  _initMap(){
     _initated = true;
     field = List<List<MapSquare>>.generate(heightSquares, (i) => List<MapSquare>.generate(widthSquares, (j)=>MapSquare(i, j, heightSquares-1, widthSquares-1)));
   }
 
-
   @override
   void render(Canvas canvas) {
       //if(!_initated)
-        initMap();
+        _initMap();
       
       double b = 13;
       double a = (size.width - 2*b) / widthSquares;
