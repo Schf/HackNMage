@@ -1,9 +1,9 @@
 MAINFILE= main
-SRCFILES=
+SRCFILES= game/game
 EXECNAME= game
 
 CC= g++
-CCLINKS= -lSDL2
+CCLINKS= -lSDL2 -lSDL2_image
 CCFLAGS= -std=c++17
 OBJDIR=bin
 OBJSFX=.o
@@ -31,7 +31,8 @@ all: $(objects) $(sources) $(libraries)
 
 $(objects): $(sources) $(libraries) | $(OBJDIR)
 	$(foreach file,$(sources),$(CC) $(CCFLAGS) -c $(file) -o \
-	$(addsuffix $(OBJSFX), $(addprefix $(OBJDIR)/, $(notdir $(basename $(file))))) |) :
+	$(addsuffix $(OBJSFX), $(addprefix $(OBJDIR)/, $(notdir \
+	$(basename $(file))))) |) :
 
 $(OBJDIR):
 	mkdir $(OBJDIR)

@@ -1,29 +1,39 @@
-#include <iostream>
-#include <thread>
-
-#include <SDL2/SDL.h>
+#include "game/game.hpp"
 
 int main (int argc, char * argv[])
 {
-    /*SDL_Init (SDL_INIT_EVERYTHING);
-    SDL_Window * window = SDL_CreateWindow ("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_SHOWN);
-    SDL_Renderer * renderer = SDL_CreateRenderer (window, -1, 0);
+    Game game ("Hack N Mage", 0, 0, 600, 400, false);
 
-    for (int i = 0; i < 300; ++i)
+    int graphic_FPS = 60;
+    const int graphic_frame_delay = 1000/graphic_FPS;
+
+    int input_FPS = graphic_FPS;
+    const int input_frame_delay = 1000/input_FPS;
+
+    const int frame_delay = 1000/std::max (graphic_FPS, input_FPS);
+
+    long last_graphic_time = SDL_GetTicks ();
+    long last_input_time = SDL_GetTicks ();
+    long frame_start;
+    int frame_time;
+
+    while (game.Running ())
     {
-        SDL_SetRenderDrawColor (renderer, 0, 255*i/300.0, 0, 255);
-        SDL_RenderClear (renderer);
-        SDL_RenderPresent (renderer);
-        SDL_Delay (10);
+        frame_start = SDL_GetTicks ();
+
+        if (frame_start - last_input_time >= input_frame_delay)
+            last_input_time = frame_start,
+            game.HandleEvents ();
+
+        game.Update ();
+
+        if (frame_start - last_graphic_time >= graphic_frame_delay)
+            last_graphic_time = frame_start,
+            game.Render ();
+
+        frame_time = SDL_GetTicks () - frame_start;
+        SDL_Delay (std::max (0, frame_delay  - frame_time));
     }
-
-    SDL_DestroyRenderer (renderer);
-    SDL_DestroyWindow (window);
-    SDL_Quit ();*/
-
-    //Game game;
-
-    // POR ENQUANTO SOH TESTANDO O MAKEFILE
 
     return 0;
 }
