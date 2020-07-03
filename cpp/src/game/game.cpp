@@ -9,8 +9,8 @@
 
 #include <SDL2/SDL_image.h>
 
-static int number_of_running_games = 0;
-static std::mutex SDL_InitAndQuit_mutex;
+// 322 is the number of SDLK_DOWN events
+std::vector <bool> KEYS (322, false);
 
 void TextureLoader (SDL_Renderer * renderer, std::vector <SDL_Rect> & rects,
         SDL_Texture * & source, std::string fname)
@@ -43,23 +43,13 @@ void TextureLoader (SDL_Renderer * renderer, std::vector <SDL_Rect> & rects,
 Game::Game (std::string title, int xpos, int ypos, int width, int height,
         bool fullscreen)
 {
-    {   // Initializing SDL if it is not already initialized
-        // Thread safe btw
-        SDL_InitAndQuit_mutex.lock ();
-        int SDL_Init_res = 0;
-
-        if (number_of_running_games <= 0)
-            number_of_running_games = 0,
-            SDL_Init_res = SDL_Init (SDL_INIT_EVERYTHING);
-
-        if (SDL_Init_res != 0)
+    {   // Initializing SDL
+        if (SDL_Init (SDL_INIT_EVERYTHING) != 0)
         {
             this->is_running = false;
             std::cout << "Couldn't initialize SDL2" << std::endl;
             return;
         }
-        ++number_of_running_games;
-        SDL_InitAndQuit_mutex.unlock ();
     }
 
 
@@ -109,6 +99,12 @@ Game::Game (std::string title, int xpos, int ypos, int width, int height,
                 this->font_texture_source, "assets/graphic.png");
     }
 
+    this->player1.AbsoluteMove (this->board.size () - 2, 1);
+    this->player2.AbsoluteMove (1, this->board[0].size () - 2);
+    this->board[this->player1.BoardPos ().first][this->player1.BoardPos ().second].
+            insert ({1, &this->player1});
+    this->board[this->player2.BoardPos ().first][this->player2.BoardPos ().second].
+            insert ({2, &this->player2});
 
     this->is_running = true;
 }
@@ -117,13 +113,7 @@ Game::~Game ()
 {
     SDL_DestroyRenderer (this->renderer);
     SDL_DestroyWindow (this->window);
-
-    SDL_InitAndQuit_mutex.lock ();
-    --number_of_running_games;
-    if (number_of_running_games <= 0)
-        number_of_running_games = 0,
-        SDL_Quit ();
-    SDL_InitAndQuit_mutex.unlock ();
+    SDL_Quit ();
 }
 
 bool Game::Running ()
@@ -140,10 +130,34 @@ void Game::HandleEvents ()
         case SDL_QUIT:
             this->is_running = false;
             break;
-        
+        case SDL_KEYDOWN:
+            KEYS[event.key.keysym.sym & (~ (1<<30))] = true;
+            break;
+        case SDL_KEYUP:
+            KEYS[event.key.keysym.sym & (~ (1<<30))] = false;
+            break;
         default:
             break;
     }
+}
+
+bool ValidPos (std::pair <int, int> pos,
+        std::vector <std::vector <std::set <std::pair <int, void *>>>> & board)
+{
+    return 1 <= pos.first && pos.first <= board.size () - 2 &&
+            1 <= pos.second && pos.second <= board[0].size () - 2;
+}
+
+void MovePlayer (int y, int x, int pcode, Player & player,
+        std::vector <std::vector <std::set <std::pair <int, void *>>>> & board)
+{
+    board[player.BoardPos ().first][player.BoardPos ().second].
+            erase ({pcode, &player});
+    player.StepMove (y, x);
+    if (!ValidPos (player.BoardPos (), board))
+        player.StepMove (-y, -x);
+    board[player.BoardPos ().first][player.BoardPos ().second].
+            insert ({pcode, &player});
 }
 
 void Game::Update ()
@@ -182,13 +196,44 @@ void Game::Update ()
                     this->board[i][j].insert ({44, NULL});
                     break;
                 default:
-                    this->board[i][j].insert ({0, NULL});
+                    this->board[i][j].insert ({255, NULL});
                     break;
                 }
             }
         }
         init = false;
     }
+    if (KEYS[SDLK_LEFT & (~ (1<<30))])
+        KEYS[SDLK_LEFT & (~ (1<<30))] = false,
+        MovePlayer (0, -1, 2, this->player2, this->board);
+
+    if (KEYS[SDLK_RIGHT & (~ (1<<30))])
+        KEYS[SDLK_RIGHT & (~ (1<<30))] = false,
+        MovePlayer (0, 1, 2, this->player2, this->board);
+
+    if (KEYS[SDLK_DOWN & (~ (1<<30))])
+        KEYS[SDLK_DOWN & (~ (1<<30))] = false,
+        MovePlayer (1, 0, 2, this->player2, this->board);
+
+    if (KEYS[SDLK_UP & (~ (1<<30))])
+        KEYS[SDLK_UP & (~ (1<<30))] = false,
+        MovePlayer (-1, 0, 2, this->player2, this->board);
+
+    if (KEYS[SDLK_a & (~ (1<<30))])
+        KEYS[SDLK_a & (~ (1<<30))] = false,
+        MovePlayer (0, -1, 1, this->player1, this->board);
+
+    if (KEYS[SDLK_d & (~ (1<<30))])
+        KEYS[SDLK_d & (~ (1<<30))] = false,
+        MovePlayer (0, 1, 1, this->player1, this->board);
+
+    if (KEYS[SDLK_s & (~ (1<<30))])
+        KEYS[SDLK_s & (~ (1<<30))] = false,
+        MovePlayer (1, 0, 1, this->player1, this->board);
+
+    if (KEYS[SDLK_w & (~ (1<<30))])
+        KEYS[SDLK_w & (~ (1<<30))] = false,
+        MovePlayer (-1, 0, 1, this->player1, this->board);
 }
 
 

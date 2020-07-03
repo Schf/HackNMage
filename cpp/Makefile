@@ -1,5 +1,5 @@
 MAINFILE= main
-SRCFILES= game/game
+SRCFILES= game/game game/player
 EXECNAME= game
 
 CC= g++

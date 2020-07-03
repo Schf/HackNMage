@@ -24,6 +24,8 @@ private:
 
     std::vector <std::vector <std::set <std::pair <int, void *>>>> board;
 
+    Player player1, player2;
+
 public:
     Game (std::string title="", int xpos=0, int ypos=0, int width=0,
             int height=0, bool fullscreen=0);
