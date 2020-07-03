@@ -11,6 +11,7 @@
 class Game
 {
 private:
+    int window_width, window_height;
     SDL_Window * window = nullptr;
     SDL_Renderer * renderer = nullptr;
 

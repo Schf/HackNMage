@@ -2,6 +2,7 @@
 
 #include <arpa/inet.h>
 #include <iostream>
+#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <mutex>
@@ -75,6 +76,8 @@ Game::Game (std::string title, int xpos, int ypos, int width, int height,
             std::cout << "SDL2 couldn't create window" << std::endl;
             return;
         }
+        this->window_width = width;
+        this->window_height = height;
     }
 
 
@@ -91,9 +94,9 @@ Game::Game (std::string title, int xpos, int ypos, int width, int height,
 
     {   // Initializing board
         // Shouldn't even have it's own block
-        this->board.resize (15);
+        this->board.resize (13);
         for (auto & line : this->board)
-            line.resize (11);
+            line.resize (15);
     }
 
 
@@ -145,7 +148,47 @@ void Game::HandleEvents ()
 
 void Game::Update ()
 {
-
+    static bool init = true;
+    if (init)
+    {
+        int board_height = this->board.size ();
+        int board_width = this->board[0].size ();
+        for (int i = 0; i < board_height; ++i)
+        {
+            for (int j = 0; j < board_width; ++j)
+            {
+                if (i == 0 && j == 0)
+                    this->board[i][j].insert ({201, NULL});
+                else if (i == 0 && j == board_width - 1)
+                    this->board[i][j].insert ({187, NULL});
+                else if (i == board_height - 1 && j == 0)
+                    this->board[i][j].insert ({200, NULL});
+                else if (i == board_height - 1 &&
+                        j == board_width - 1)
+                    this->board[i][j].insert ({188, NULL});
+                else if (i == 0 || i == board_height - 1)
+                    this->board[i][j].insert ({205, NULL});
+                else if (j == 0 || j == board_width - 1)
+                    this->board[i][j].insert ({186, NULL});
+                else switch (rand () % 16)
+                {
+                case 0:
+                    this->board[i][j].insert ({96, NULL});
+                    break;
+                case 1:
+                    this->board[i][j].insert ({46, NULL});
+                    break;
+                case 2:
+                    this->board[i][j].insert ({44, NULL});
+                    break;
+                default:
+                    this->board[i][j].insert ({0, NULL});
+                    break;
+                }
+            }
+        }
+        init = false;
+    }
 }
 
 
@@ -154,10 +197,29 @@ void Game::Render ()
     SDL_RenderClear (this->renderer);
 
     // Actual rendering;
-    static int cnt = 0;
-    if (++cnt < 60*256)
-        SDL_RenderCopy (this->renderer, this->graphic_texture_source,
-                & (this->graphic_textures[cnt/60]), NULL);
+    int board_height = this->board.size ();
+    int board_width = this->board[0].size ();
+    int slot_height = std::min (this->window_height/(board_height*1.6),
+            this->window_width/(board_width*1.0)*2);
+    int slot_width = slot_height/2;
+    int slot_x_delta = (this->window_width - board_width*slot_width)/2;
+    int slot_y_delta = (this->window_height - board_height*slot_height)/2;
+    for (int i = 0; i < board_height; ++i)
+    {
+        for (int j = 0; j < board_width; ++j)
+        {
+            int texture_rect_index = this->board[i][j].begin ()->first;
+            SDL_Rect target_pos_rect;
+
+            target_pos_rect.w = slot_width;
+            target_pos_rect.h = slot_height;
+            target_pos_rect.x = j*slot_width + slot_x_delta;
+            target_pos_rect.y = i*slot_height;// + slot_y_delta;
+            SDL_RenderCopy (this->renderer, this->graphic_texture_source,
+                    & (this->graphic_textures[texture_rect_index]),
+                    & target_pos_rect);
+        }
+    }
 
     SDL_RenderPresent (this->renderer);
 }

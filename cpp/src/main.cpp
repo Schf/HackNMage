@@ -2,7 +2,7 @@
 
 int main (int argc, char * argv[])
 {
-    Game game ("Hack N Mage", 0, 0, 600, 400, false);
+    Game game ("Hack N Mage", 550, 0, 9*40, 16*40, false);
 
     int graphic_FPS = 60;
     const int graphic_frame_delay = 1000/graphic_FPS;
